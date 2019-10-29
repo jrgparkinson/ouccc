@@ -1,1 +1,1 @@
-web: gunicorn betting.wsgi
+web: gunicorn ouccc.wsgi

@@ -1,5 +1,5 @@
 """
-Django settings for betting project on Heroku. For more info, see:
+Django settings for ouccc project on Heroku. For more info, see:
 https://github.com/heroku/heroku-django-template
 
 For more information on this file, see
@@ -53,7 +53,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'betting.urls'
+ROOT_URLCONF = 'ouccc.urls'
 
 TEMPLATES = [
     {
@@ -72,7 +72,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'betting.wsgi.application'
+WSGI_APPLICATION = 'ouccc.wsgi.application'
 
 
 # Database

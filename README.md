@@ -47,3 +47,26 @@ See also, a [ready-made application](https://github.com/heroku/python-getting-st
 - [Gunicorn](https://warehouse.python.org/project/gunicorn/)
 - [WhiteNoise](https://warehouse.python.org/project/whitenoise/)
 - [dj-database-url](https://warehouse.python.org/project/dj-database-url/)
+
+
+## My actual instructions
+
+$ mkdir ouccc
+$ cd ouccc
+$ python3 -m venv env
+% source env/bin/activate
+$ pip install django
+$ django-admin.py startproject --template=https://github.com/heroku/heroku-django-template/archive/master.zip --name=Procfile .
+
+Fix up gitignore, commit code, push
+
+Then in Heroku, manual build
+
+
+Make admin:
+Online 
+heroku run > "python manage.py migrate"
+heroku run > "python manage.py createsuperuser"
+
+Now make/deploy betting app
+
