@@ -58,6 +58,12 @@ $ python3 -m venv env
 $ pip install django
 $ django-admin.py startproject --template=https://github.com/heroku/heroku-django-template/archive/master.zip --name=Procfile .
 
+$ pip install django_heroku dj_database_url
+$ python manage.py migrate
+$ python manage.py runserver
+
+if port in use, $ sudo fuser -k 8000/tcp
+
 Fix up gitignore, commit code, push
 
 Then in Heroku, manual build
