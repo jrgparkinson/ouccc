@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block head %}
+<script>
+
+
+
+   function showMarket(div_id, market_id, do_toggle){
+
+
+//make an ajax call and get status value using the same 'id'
+//var var1= document.getElementById("div_id").value;
+$.ajax({
+
+        type:"GET",//or POST
+        url:'market/' + market_id + '/',
+        success:function(data){
+               // process on data
+               var elName = '#' + div_id;
+               $(elName).html(data);
+
+               if (do_toggle) {
+               $(elName).toggle();
+               }
+
+        }
+     })
+
+}
+
+
+function placeBet(market_id) {
+
+document.getElementById('marketErr'+market_id).innerHTML = '';
+
+/* Perform some basic validation */
+var price = document.getElementById('price' + market_id).value;
+
+var selected = document.querySelector('input[name=competitorSelect' + market_id +']:checked');
+
+
+if (price < 0 || price > 10) {
+    /*alert('Invalid');*/
+} else if (selected == null) {
+
+document.getElementById('marketErr'+market_id).innerHTML = 'Error: no competitor selected';
+
+} else {
+
+
+$.ajax({
+
+        type:'POST',
+        url:'placeBet/' + market_id + '/',
+        data:{
+            competitor:$('input[name=competitorSelect' + market_id +']:checked').val(),
+            price:$('#price' + market_id).val(),
+            csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+            action: 'post'
+        },
+        success:function(json){
+        showMarket('market' + market_id, market_id, false);
+        }
+     })
+
+}
+
+}
+
+
+
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <form method="POST" id="marketsForm">
+    {% csrf_token %}
+
+    {% if user.is_authenticated %}
+  Hi {{ user.username }}!
+  <p><a href="{% url 'logout' %}">logout</a></p>
+  <p><a href="{% url 'password_reset' %}">reset password</a></p>
+{% else %}
+  <p>You are not logged in</p>
+  <a href="{% url 'login' %}">login</a>
+{% endif %}
+
+{% for c in comps %}
+    <div class="card-deck mb-3 text-center">
+        <div class="card mb-4 shadow-sm">
+      <div class="card-header">
+        <h4 class="my-0 font-weight-normal">
+            {{ c.name }} </h4>
+      </div>
+            <div class="card-body">
+
+{% for m in c.market_set.all %}
+
+                <a href='#' onclick="showMarket('market{{m.id}}', {{m.id}}, true)"><h2>{{m.name}}</h2></a> <div id="market{{m.id}}" style="display:none;" ></div>
+                <br>
+{% endfor %}
+<br>
+            </div>
+
+    </div> <br>
+{% endfor %}
+    </form>
+</div>
+
+
+<script>
+    $("#marketsForm").submit(function(event) {
+
+                /* stop form from submitting normally */
+                event.preventDefault();
+                });
+
+</script>
+
+{% endblock %}

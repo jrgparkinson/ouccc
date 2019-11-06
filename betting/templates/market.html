@@ -1,0 +1,28 @@
+
+
+
+  <div class="form-group mx-sm-3 mb-2 competitor-select">
+
+        {% for competitor in competition.competitors.all %}
+
+         <input type="radio" id="{{market.id}}_{{competitor.id}}" name="competitorSelect{{market.id}}" value="{{competitor.id}}" {% if bet and bet.competitor.id == competitor.id %}class="preselected" checked{% endif %}>
+        <label for="{{market.id}}_{{competitor.id}}">{{competitor}}</label>
+
+
+
+         {% endfor %}
+      <div id="marketErr{{market.id}}"></div>
+
+  </div>
+    <div class="input-group mb-1 mr-sm-1">
+        <div class="input-group-prepend">
+      <div class="input-group-text">£</div>
+    </div>
+        <input class="form-control" type="number" min="0" max="10" step="0.01" id="price{{market.id}}" {% if not bet == None %}placeholder="{{bet.price}}" readonly{% else %}placeholder="0.0"{% endif %}>
+
+
+         <button type="submit" class="btn btn-primary mb-2" onclick="placeBet({{market.id}})" {% if not bet == None %} disabled {% endif %}>Place bet</button>
+
+  </div>
+
+
