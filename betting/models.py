@@ -3,6 +3,9 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+import datetime
+from django.utils import timezone
+
 
 class Club(models.Model):
     club_name = models.CharField(max_length=100)
@@ -23,12 +26,21 @@ class Competitor(models.Model):
     def __str__(self):
         return self.__repr__()
 
+class Event(models.Model):
+    date = models.DateField()
+    name = models.CharField(max_length=200)
+    location = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.name
+
 # E.g. Varsity XC Men's race 2019
 class Competition(models.Model):
     name = models.CharField(max_length=100)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
-    location = models.CharField(max_length=200)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    # location = models.CharField(max_length=200)
 
     competitors = models.ManyToManyField(Competitor)
 
@@ -37,6 +49,10 @@ class Competition(models.Model):
 
     def __str__(self):
         return self.__repr__()
+
+    @property
+    def can_place_bet(self):
+        return timezone.now() < self.start_date
 
 
 
@@ -65,6 +81,30 @@ class Market(models.Model):
     def __str__(self):
         return '%s - %s' % (self.event.name, self.name)
 
+    def get_existing_bets(self):
+        '''
+
+        :return: dict mapping competitor names to their total value
+        '''
+
+
+        comps_value = {}
+
+        # Assumes bet placings"
+
+        all_bets = BetPlacing.objects.filter(market=self)
+        print(all_bets)
+
+        for bet in all_bets:
+
+            if bet.competitor.name in comps_value:
+                comps_value[bet.competitor.name] += bet.price
+            else:
+                comps_value[bet.competitor.name] = bet.price
+
+        print(comps_value)
+        return comps_value
+
 
 # Predict who finishes in a particular place
 class MarketPlacing(Market):
@@ -87,6 +127,22 @@ class Punter(models.Model):
     email = models.EmailField()
     user = models.OneToOneField( get_user_model(),on_delete=models.CASCADE)
 
+    @property
+    def get_profit(self):
+        #TODO
+        return 0.0
+    @property
+    def get_ranking(self):
+        profit = self.get_profit()
+
+
+
+        if profit < 0:
+            return 'Chopper'
+        elif profit >=0:
+            return 'Cowley Club'
+
+
     def __str__(self):
         return self.name
 
@@ -94,7 +150,7 @@ class Punter(models.Model):
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
-        Punter.objects.create(user=instance)
+        Punter.objects.create(user=instance, name=instance.get_username())
 
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):

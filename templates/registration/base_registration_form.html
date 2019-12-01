@@ -1,0 +1,16 @@
+<!-- templates/registration/login.html -->
+{% extends 'base_registration.html' %}
+{% load crispy_forms_tags %}
+
+ {% block cardBody %}
+<div class="form-desc">{% block description %}{% endblock%}</div>
+    <form method="post">
+     {% csrf_token %}
+  {{ form|crispy}}
+  <button type="submit" class="btn btn-primary btn-lg ">{% block button_name %}{% endblock %}</button> {%block extraInfo%}{%endblock%}
+      </form>
+
+
+{% endblock%}
+
+

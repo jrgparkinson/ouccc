@@ -1,28 +1,116 @@
+<div class="navTitle" style="float:left">
+    {% if bet %}
+    <span class="badge badge-secondary">Bet placed</span>
+    {% elif not competition.can_place_bet %}
+    <span class="badge badge-secondary">Betting closed</span>
+    {% else %}
+    <span class="badge badge-secondary">Place bet</span>
+    {% endif %}
+</div>
+
+<div class="form-group mx-sm-3 mb-2 competitor-select" style="float:right; width:80%; margin-top:5px;" >
 
 
+    {% for competitor in competition.competitors.all %}
 
-  <div class="form-group mx-sm-3 mb-2 competitor-select">
+    <input type="radio" id="{{market.id}}_{{competitor.id}}" name="competitorSelect{{market.id}}" value="{{competitor.id}}"
+           {% if bet %}
+           {% if bet.competitor.id == competitor.id %}
+           class="preselected" checked
+           {% else %}
+           class="unselectable"  disabled readonly
+           {% endif %}
+           {% endif %}
+           {% if not user.is_authenticated or  not competition.can_place_bet %} disabled readonly {% endif %}
+           >
 
-        {% for competitor in competition.competitors.all %}
+    <label for="{{market.id}}_{{competitor.id}}" {% if bet or not competition.can_place_bet %}class="noselect"{% endif %}>{{competitor}}</label>
 
-         <input type="radio" id="{{market.id}}_{{competitor.id}}" name="competitorSelect{{market.id}}" value="{{competitor.id}}" {% if bet and bet.competitor.id == competitor.id %}class="preselected" checked{% endif %}>
-        <label for="{{market.id}}_{{competitor.id}}">{{competitor}}</label>
+    {% endfor %}
+    <div id="marketErr{{market.id}}"></div>
 
 
+    {% if user.is_authenticated   %}
 
-         {% endfor %}
-      <div id="marketErr{{market.id}}"></div>
 
-  </div>
-    <div class="input-group mb-1 mr-sm-1">
-        <div class="input-group-prepend">
-      <div class="input-group-text">£</div>
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="input-group">
+                {% if  bet or competition.can_place_bet %}
+
+                <div class="input-group-prepend">
+                    <span class="input-group-text">£</span>
+                </div>
+                <input class="form-control" type="number" min="0" max="10" step="0.01" id="price{{market.id}}"
+                       {% if not bet == None %}placeholder="{{bet.price}}" readonly{% else %}placeholder="0.0"{% endif %}
+                       {% if not competition.can_place_bet or not user.is_authenticated %}readonly{% endif %}
+                >
+                <div class="input-group-append">
+                    <button type="submit" class="btn {% if bet %} btn-secondary {% else %} btn-primary {% endif %}" onclick="placeBet({{market.id}}, {{competition.id}})" {% if not bet == None %} disabled {% endif %}>Place bet</button>
+                </div>
+                {% endif %}
+            </div>
+        </div>
     </div>
-        <input class="form-control" type="number" min="0" max="10" step="0.01" id="price{{market.id}}" {% if not bet == None %}placeholder="{{bet.price}}" readonly{% else %}placeholder="0.0"{% endif %}>
 
 
-         <button type="submit" class="btn btn-primary mb-2" onclick="placeBet({{market.id}})" {% if not bet == None %} disabled {% endif %}>Place bet</button>
 
+
+
+    {% endif %}
+
+</div>
+
+
+<div class="input-group mb-1 mr-sm-1">
+</div>
+
+{% if  not user.is_authenticated   %}
+
+<div class="alert alert-warning" role="alert">
+    <a href="{% url 'login' %}?next={{ request.path | urlencode }}">Login</a> or <a href="{% url 'accounts:signup' %}?next={{ request.path | urlencode }}">signup</a> to place a bet.
+</div>
+
+{% endif %}
+
+
+<div class="card" style="width: 38rem;">
+  <div class="card-header">
+    Current bets
   </div>
 
+    <div class="container">
+        <div class="chart-container" style="position: relative; height:12rem; width:36rem;">
+            <canvas id="pieChart{{market.id}}" width="3" height="1"></canvas>
+        </div>
+    </div>
+</div>
 
+
+<script>
+var ctx = document.getElementById('pieChart{{market.id}}').getContext('2d');
+var myChart = new Chart(ctx, {
+    type: 'pie',
+    data: {
+        datasets: [{
+            data: [{% for v in existingBets.price %} {{v}} {% if not forloop.last %},{% endif %} {% endfor %}],
+            backgroundColor: ["#F7464A", "#46BFBD", "#FDB45C", "#949FB1", "#4D5360"],
+            labels: [{% for l in existingBets.labels %} "{{l}}" {% if not forloop.last %},{% endif %} {% endfor %}]
+    }],
+
+    // These labels appear in the legend and in the tooltips when hovering different arcs
+    labels: [{% for l in existingBets.labels %} "{{l}}" {% if not forloop.last %},{% endif %} {% endfor %}]
+    },
+    options: {
+    legend: {position: 'right'},
+    tooltips: {
+            callbacks: {
+            // Just use the label (which includes the money value)
+                label: function(tooltipItem, data) {
+                    return data.labels[tooltipItem['index']];
+                     }
+            }
+        }
+    }
+});
+</script>

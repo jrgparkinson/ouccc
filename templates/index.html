@@ -5,14 +5,63 @@
 
 {% block content %}
 
-<div style="position: absolute;
+
+
+
+
+<div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+  <h1 class="display-4" style="font-size:800%; font-family:cambria;"> <a href="http://www.ouccc.org.uk" title="OUCCC"><img src="{% static 'OUCCC.jpg' %}" /></a> &  <a href="https://www.instagram.com/thecowleyclub/" title="The Cowley Club"><img src="{% static 'cowleyClub.png' %}" /></a></h1>
+  <p class="lead" style="font-size:300%">Proudly present...</p>
+</div>
+
+<div class="container">
+<div class="card-deck mb-3 text-center">
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header">
+        <h4 class="my-0 font-weight-normal">XChange</h4>
+      </div>
+      <div class="card-body">
+        <h1 class="card-title pricing-card-title">Fantasy trading game</h1>
+        <ul class="list-unstyled mt-3 mb-4">
+          <li>Trade shares in OUCCC runners throughout the season</li>
+          <li>Earn dividends when they perform well</li>
+          <li>Unlease your inner Warren Buffet</li>
+          <li><span class="badge badge-primary">Coming soon</span> Futures & securities markets</li>
+        </ul>
+         <a href="xchange" role="button" class="btn btn-lg btn-block btn-primary">Start trading</a>
+      </div>
+    </div>
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header">
+        <h4 class="my-0 font-weight-normal">Bets</h4>
+      </div>
+      <div class="card-body">
+        <h1 class="card-title pricing-card-title">Online pool betting</h1>
+        <ul class="list-unstyled mt-3 mb-4">
+          <li>All your favourite OUCCC events</li>
+          <li>See who's hot and who's not</li>
+          <li>Almost live results</li>
+          <li>Beat the bookie</li>
+
+        </ul>
+        <a href="betting" role="button" class="btn btn-lg btn-block btn-primary">Start betting</a>
+      </div>
+    </div>
+
+
+
+  </div>
+</div>
+
+
+<!--<div style="position: absolute;
   left: 50%;
   top: 50%;
   -webkit-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%); font-size:32px;">
     <a href="betting">Bets</a>
     <a href="http://www.ouccc.org.uk"><img src="{% static 'OUCCC.jpg' %}" /></a>
-     <a href="#">XChange</a>
-</div>
+     <a href="xchange">XChange</a>
+</div>-->
 
 {% endblock %}

@@ -1,0 +1,33 @@
+<!-- templates/registration/login.html -->
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+
+{% block title %}Registration{% endblock %}
+
+{% block head %}
+<link href="{% static 'signin.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+
+
+
+<div class="jumbotron vertical-center">
+
+  <div class="container accounts-container">
+
+  <div class="card" >
+  <h1 class="card-header">{% block form_title %}{% endblock %}</h1>
+  <div class="card-body">
+    {% block cardBody %}{% endblock%}
+  </div>
+</div>
+
+
+
+  </div>
+</div>
+
+
+{% endblock %}

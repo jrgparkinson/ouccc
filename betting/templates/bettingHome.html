@@ -4,8 +4,17 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block head %}
+{% load tz %} <!--Time zones -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+
+
 <script>
 
+$("ul.nav-tabs a").click(function (e) {
+  e.preventDefault();
+    $(this).tab('show');
+});
 
 
    function showMarket(div_id, market_id, do_toggle){
@@ -32,7 +41,7 @@ $.ajax({
 }
 
 
-function placeBet(market_id) {
+function placeBet(market_id, comp_id) {
 
 document.getElementById('marketErr'+market_id).innerHTML = '';
 
@@ -62,7 +71,7 @@ $.ajax({
             action: 'post'
         },
         success:function(json){
-        showMarket('market' + market_id, market_id, false);
+        showMarket('marketDetails' + comp_id, market_id, false);
         }
      })
 
@@ -75,39 +84,86 @@ $.ajax({
 </script>
 {% endblock %}
 
+{% block app_name %}
+<a class="nav-link" href="/betting">Betting pool</a>
+{% endblock %}
+
 {% block content %}
+<!--<div class="container">
+    <div style="float:right; width:60%">
+        <div style="float:right; width:200px">
+            {% if user.is_authenticated %}
+            Logged in as {{ user.username }}<br>
+
+            (<a href="{% url 'logout' %}?next={{ request.path | urlencode }}">logout</a>, <a href="{% url 'password_reset' %}?next={% url 'login' %}">reset password</a>). <br>
+            Currently wagered: ... <br>
+            Profit/loss: ... <br>
+            Ranking: Chopper <br>
+            {% else %}
+
+            <a href="{% url 'login' %}?next={{ request.path | urlencode }}">Login</a> or <a href="{% url 'accounts:signup' %}?afterlogin={{ request.path | urlencode }}">signup</a> to place bets.
+            {% endif %}
+
+        </div>
+    </div>
+</div>-->
+
+
 <div class="container">
+
+
+
+
     <form method="POST" id="marketsForm">
-    {% csrf_token %}
+        {% csrf_token %}
 
-    {% if user.is_authenticated %}
-  Hi {{ user.username }}!
-  <p><a href="{% url 'logout' %}">logout</a></p>
-  <p><a href="{% url 'password_reset' %}">reset password</a></p>
-{% else %}
-  <p>You are not logged in</p>
-  <a href="{% url 'login' %}">login</a>
-{% endif %}
+        <div class="tabbable boxed parentTabs">
+            <ul class="nav nav-tabs">
+                <li class="navTitle"><span class="badge badge-primary">Event</span></li>
+                {% for event in events %}
+                <li><a href="#event{{event.id}}">{{event.name}}</a></li>
+                {% endfor %}
+            </ul>
+            <div class="tab-content">
 
-{% for c in comps %}
-    <div class="card-deck mb-3 text-center">
-        <div class="card mb-4 shadow-sm">
-      <div class="card-header">
-        <h4 class="my-0 font-weight-normal">
-            {{ c.name }} </h4>
-      </div>
-            <div class="card-body">
 
-{% for m in c.market_set.all %}
+                {% for event in events %}
+                <div class="tab-pane fade" id="event{{event.id}}">
+                    <div class="tabbable">
+                        <ul class="nav nav-tabs">
+                            <li class="navTitle"><span class="badge badge-primary">Race</span></li>
+                            {% if event.competition_set.all %}
+                            {% for comp in event.competition_set.all %}
+                            <li><a href="#comp{{comp.id}}">{% if not comp.can_place_bet %}<span class="glyphicon glyphicon-lock" aria-hidden="true"></span> {% endif %}{{comp.name}}</a> </li>
+                            {% endfor %}
+                            {% else %}
+                            <li>No races available</li>
+                            {% endif %}
+                        </ul>
+                        <div class="tab-content">
 
-                <a href='#' onclick="showMarket('market{{m.id}}', {{m.id}}, true)"><h2>{{m.name}}</h2></a> <div id="market{{m.id}}" style="display:none;" ></div>
-                <br>
-{% endfor %}
-<br>
+                            {% for comp in event.competition_set.all %}
+                            <div class="tab-pane fade" id="comp{{comp.id}}">
+
+                                <ul class="nav nav-tabs">
+                                     <li class="navTitle"><span class="badge badge-primary">Market</span></li>
+                                     {% for m in comp.market_set.all %}
+                                    <li><a href='#' onclick="showMarket('marketDetails{{comp.id}}', {{m.id}}, false)">{{m.name}}</a></li>
+                                    {% endfor %}
+                                </ul>
+
+                                <div id="marketDetails{{comp.id}}"></div>
+
+
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
             </div>
+        </div>
 
-    </div> <br>
-{% endfor %}
     </form>
 </div>
 
@@ -119,6 +175,14 @@ $.ajax({
                 event.preventDefault();
                 });
 
+                $("ul.nav-tabs a").click(function (e) {
+  e.preventDefault();
+    $(this).tab('show');
+});
+
+
 </script>
+
+
 
 {% endblock %}

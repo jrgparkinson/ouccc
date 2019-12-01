@@ -42,7 +42,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'betting.apps.BettingConfig',
     'accounts.apps.AccountsConfig',
-]
+    'xchange.apps.XchangeConfig',
+ 'crispy_forms']
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -61,8 +65,9 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [os.path.join(BASE_DIR, 'templates'),
-os.path.join(BASE_DIR, 'templates', 'registration'),
-                 os.path.join(BASE_DIR, 'betting', 'templates')],
+                 os.path.join(BASE_DIR, 'templates', 'registration'),
+                 os.path.join(BASE_DIR, 'betting', 'templates'),
+                 os.path.join(BASE_DIR, 'xchange', 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -107,8 +112,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
+LANGUAGE_CODE = 'en-gb'
+TIME_ZONE = 'Europe/London'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
@@ -125,13 +130,15 @@ ALLOWED_HOSTS = ['*']
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
-STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
 
 # Extra places for collectstatic to find static files.
-STATICFILES_DIRS = [
-    os.path.join(PROJECT_ROOT, 'static'),
-    os.path.join(PROJECT_ROOT, 'static', 'bootstrap')
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'xchange', 'static')
+    # STATIC_ROOT,
+    # os.path.join(PROJECT_ROOT, 'static'),
+    # os.path.join(PROJECT_ROOT, 'static', 'bootstrap'),
+    # os.path.join(STATIC_ROOT, 'xchange-staticfiles')
 ]
 
 # Simplified static file serving.

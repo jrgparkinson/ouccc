@@ -1,0 +1,35 @@
+<!-- templates/registration/login.html -->
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+
+{% block title %}Login{% endblock %}
+
+{% block head %}
+<link href="{% static 'signin.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+
+<div class="jumbotron vertical-center">
+
+  <div class="container accounts-container">
+
+  <div class="card" >
+  <h1 class="card-header">Login</h1>
+  <div class="card-body">
+    <form method="post">
+     {% csrf_token %}
+  {{ form|crispy}}
+  <button type="submit" class="btn btn-primary btn-lg ">Login</button>
+      </form>
+  </div>
+</div>
+
+
+
+  </div>
+</div>
+
+
+{% endblock %}

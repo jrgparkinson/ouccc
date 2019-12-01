@@ -1,0 +1,23 @@
+
+{% extends 'xchange_base.html' %}
+{% load static %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+          General summary of the game here.
+
+<br>
+
+<a href="../accounts/login">Login</a>
+
+          {%endblock%}
+
+
+      {% block footer %}
+
+    <!-- Demo scripts for this page-->
+    <script src="{% static 'js/demo/datatables-demo.js' %}"></script>
+    <script src="{% static 'js/demo/chart-area-demo.js' %}"></script>
+    {% endblock %}

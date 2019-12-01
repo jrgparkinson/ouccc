@@ -15,14 +15,18 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path
 from django.urls import include, path
 from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('betting/', include('betting.urls')),
+    path('xchange/', include('xchange.urls')),
     path('', views.home, name='Home'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('accounts/', include('accounts.urls')) # new
 ]
+
+handler404 = 'ouccc.views.handler404'
+handler500 = 'ouccc.views.handler500'
+# handler403 = views.handler403

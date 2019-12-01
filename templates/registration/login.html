@@ -1,15 +1,9 @@
-<!-- templates/registration/login.html -->
-{% extends 'base.html' %}
+{% extends 'base_registration_form.html' %}
+
 
 {% block title %}Login{% endblock %}
+{% block form_title %}Login{% endblock %}
+{% block button_name %}Login{% endblock %}
 
-{% block content %}
+{% block extraInfo %} <a role="button" class="btn btn-secondary btn-sm" style="float:right" href="{% url 'password_reset' %}?next={% url 'login' %}">Forgot your password? </a>{% endblock %}
 
-<h2>Login</h2>
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Login</button>
-</form>
-
-{% endblock %}
